@@ -8,39 +8,13 @@ interface CompressedItem {
 
 interface Props {
   items: CompressedItem[]
-  isPremium: boolean
   outputFormat: string
   onFormatChange: (fmt: string) => void
 }
 
-async function applyWatermark(blob: Blob): Promise<Blob> {
-  return new Promise((resolve) => {
-    const url = URL.createObjectURL(blob)
-    const img = new Image()
-    img.onload = () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = img.naturalWidth
-      canvas.height = img.naturalHeight
-      const ctx = canvas.getContext('2d')!
-      ctx.drawImage(img, 0, 0)
-      ctx.font = `bold ${Math.max(16, img.naturalWidth / 20)}px sans-serif`
-      ctx.fillStyle = 'rgba(255,255,255,0.5)'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      ctx.fillText('ShrinkIt – shrinkit.techscript.ca', canvas.width / 2, canvas.height / 2)
-      canvas.toBlob((b) => {
-        URL.revokeObjectURL(url)
-        resolve(b || blob)
-      }, blob.type || 'image/jpeg', 0.92)
-    }
-    img.src = url
-  })
-}
-
-export default function ExportControls({ items, isPremium, outputFormat, onFormatChange }: Props) {
+export default function ExportControls({ items, outputFormat, onFormatChange }: Props) {
   const handleSingleDownload = async (item: CompressedItem) => {
-    let blob = item.compressedBlob
-    if (!isPremium) blob = await applyWatermark(blob)
+    const blob = item.compressedBlob
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
@@ -53,8 +27,7 @@ export default function ExportControls({ items, isPremium, outputFormat, onForma
   const handleBatchDownload = async () => {
     const zip = new JSZip()
     for (const item of items) {
-      let blob = item.compressedBlob
-      if (!isPremium) blob = await applyWatermark(blob)
+      const blob = item.compressedBlob
       const ext = outputFormat !== 'original' ? outputFormat : item.originalFile.name.split('.').pop() || 'jpg'
       zip.file(`shrinkit-${item.originalFile.name.replace(/\.[^.]+$/, '')}.${ext}`, blob)
     }
@@ -84,12 +57,6 @@ export default function ExportControls({ items, isPremium, outputFormat, onForma
           <option value="webp">WebP</option>
         </select>
       </div>
-
-      {!isPremium && (
-        <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2">
-          ⚠️ Free tier adds a watermark. Upgrade to Premium for clean downloads.
-        </p>
-      )}
 
       <div className="flex flex-wrap gap-3">
         {items.map((item, i) => (

@@ -3,10 +3,8 @@ import UploadArea from './components/UploadArea'
 import TargetSizeInput from './components/TargetSizeInput'
 import CompressionPreview from './components/CompressionPreview'
 import ExportControls from './components/ExportControls'
-import PremiumAccess from './components/PremiumAccess'
 import ProgressIndicator from './components/ProgressIndicator'
 import { compressToTargetSize } from './services/CompressionEngine'
-import { getPremiumStatus } from './services/PaymentService'
 import { registerServiceWorker } from './serviceWorker'
 
 interface ImageItem {
@@ -21,7 +19,6 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
   const [targetBytes, setTargetBytes] = useState(100 * 1024)
   const [items, setItems] = useState<ImageItem[]>([])
-  const [isPremium, setIsPremium] = useState(() => getPremiumStatus().isPremium)
   const [outputFormat, setOutputFormat] = useState('original')
 
   useEffect(() => {
@@ -159,15 +156,11 @@ export default function App() {
             <h2 className="font-semibold text-gray-800 dark:text-white mb-4">Download</h2>
             <ExportControls
               items={completedItems}
-              isPremium={isPremium}
               outputFormat={outputFormat}
               onFormatChange={setOutputFormat}
             />
           </section>
         )}
-
-        {/* Premium */}
-        <PremiumAccess isPremium={isPremium} onPremiumChange={setIsPremium} />
 
         {/* Clear */}
         {items.length > 0 && (
