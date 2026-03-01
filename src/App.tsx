@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import DonateButton from './components/DonateButton'
 import UploadArea from './components/UploadArea'
 import TargetSizeInput from './components/TargetSizeInput'
 import CompressionPreview from './components/CompressionPreview'
@@ -93,17 +94,19 @@ export default function App() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <span className="text-2xl">🗜️</span>
             <span className="font-bold text-xl text-gray-900 dark:text-white">ShrinkIt</span>
             <span className="text-xs bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 px-2 py-0.5 rounded-full">Beta</span>
           </div>
-          <button
-            onClick={() => setDarkMode((d) => !d)}
-            className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            aria-label="Toggle dark mode"
-          >
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <DonateButton />
+            <button
+              onClick={() => setDarkMode((d) => !d)}
+              className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Toggle dark mode"
+            >
             {darkMode ? (
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -116,6 +119,7 @@ export default function App() {
               </svg>
             )}
           </button>
+          </div>
         </div>
       </header>
 
@@ -175,8 +179,19 @@ export default function App() {
         )}
       </main>
 
-      <footer className="max-w-4xl mx-auto px-4 py-6 text-center text-xs text-gray-400 dark:text-gray-600">
-        ShrinkIt © {new Date().getFullYear()} — Privacy first. No uploads. No tracking.
+      <footer className="max-w-4xl mx-auto px-4 py-6 text-center text-xs text-gray-400 dark:text-gray-600 space-y-1">
+        <p>ShrinkIt © {new Date().getFullYear()} — Privacy first. No uploads. No tracking.</p>
+        <p>
+          Powered by{' '}
+          <a
+            href="https://www.techscript.ca"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-gray-600 dark:hover:text-gray-400 transition-colors"
+          >
+            Techscript
+          </a>
+        </p>
       </footer>
     </div>
   )
